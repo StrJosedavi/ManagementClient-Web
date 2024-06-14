@@ -1,15 +1,15 @@
 <template>
   <div class="list-container">
     <h1>Pessoas</h1>
-    
+
     <div class="filters">
       <div class="filter-group">
         <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" v-model="cpf" placeholder="Informe o CPF">
+        <input type="text" id="cpf" v-model="cpf" placeholder="Informe o CPF" />
       </div>
       <div class="filter-group">
         <label for="cnpj">CNPJ:</label>
-        <input type="text" id="cnpj" v-model="cnpj" placeholder="Informe o CNPJ">
+        <input type="text" id="cnpj" v-model="cnpj" placeholder="Informe o CNPJ" />
       </div>
       <button @click="fetchPersons">Filtrar</button>
     </div>
@@ -27,50 +27,59 @@
             <p><strong>Email:</strong> {{ person.mail }}</p>
             <p><strong>Telefone:</strong> {{ person.phone }}</p>
             <p><strong>Endereço:</strong> {{ person.address }}</p>
-            <p><strong>Data de Nascimento:</strong> {{ new Date(person.birthDate).toLocaleDateString() }}</p>
+            <p>
+              <strong>Data de Nascimento:</strong>
+              {{ new Date(person.birthDate).toLocaleDateString() }}
+            </p>
           </div>
         </li>
       </ul>
-      <p v-if="persons.length === 0" class="no-results">Não foram encontradas pessoas com os filtros informados.</p>
+      <p v-if="persons.length === 0" class="no-results">
+        Não foram encontradas pessoas com os filtros informados.
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
+import { ref } from 'vue'
+import axios from 'axios'
 
-const cpf = ref('');
-const cnpj = ref('');
-const persons = ref([]);
+const cpf = ref('')
+const cnpj = ref('')
+const persons = ref([])
 
-axios.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
   }
-  return config;
-}, error => {
-  return Promise.reject(error);
-});
+)
 
 const fetchPersons = async () => {
   try {
+    if (cpf.value && cnpj.value) {
+      throw 'Digite apenas um filtro ou CPF ou CNPJ'
+    }
+
     const response = await axios.get('https://localhost:5200/Person/GetAll', {
       params: {
         cpf: cpf.value,
         cnpj: cnpj.value
       }
-    });
+    })
 
-    console.log('Response data:', response.data); // Verifica o que está sendo retornado pela API
-
+    console.log('Response data:', response.data)
   } catch (error) {
-    console.error('Error fetching persons:', error);
-    alert('Falha ao buscar pessoas. Por favor, tente novamente mais tarde.');
+    alert(error)
   }
-};
-
+}
 </script>
 
 <style scoped>
