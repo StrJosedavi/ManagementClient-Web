@@ -37,13 +37,20 @@ const handleSubmit = async () => {
 
     if (response.status === 200) {
       alert('Login successful!');
-      // Redireciona para outra rota após login bem-sucedido
-      router.push('/list');
+      const token = response.data.acessToken.code;
+      localStorage.setItem('token', token);
+
+      router.push('/listPerson');
     } else {
       alert('Login failed. Invalid credentials.');
     }
   } catch (error) {
     console.error('Error during login:', error);
+    if (error.response) {
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      console.error('Response headers:', error.response.headers);
+    }
     alert('Login failed. Please try again later.');
   }
 };
