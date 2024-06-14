@@ -1,74 +1,88 @@
 <template>
   <div class="login-container">
-    <h2>Login</h2>
     <form @submit.prevent="handleSubmit" class="login-form">
+      <h2>Login</h2>
       <div class="form-group">
         <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username" required>
+        <input type="text" id="username" v-model="username" required />
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+        <input type="password" id="password" v-model="password" required />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Entrar</button>
+      <PopMessage :message="loginMessage" :messageType="loginMessageType" />
     </form>
   </div>
 </template>
 
 <script setup>
-import axios from 'axios';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import axios from 'axios'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-const username = ref('');
-const password = ref('');
-const router = useRouter();
+const username = ref('')
+const password = ref('')
+const router = useRouter()
+
+const loginMessage = ref('')
+const loginMessageType = ref('')
 
 const handleSubmit = async () => {
   try {
-    const response = await axios.post('https://localhost:5200/Authentication', {
-      username: username.value,
-      password: password.value
-    }, {
-      headers: {
-        'Content-Type': 'application/json'
+    const response = await axios.post(
+      'https://localhost:5200/Authentication',
+      {
+        username: username.value,
+        password: password.value
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
-    });
+    )
 
     if (response.status === 200) {
-      alert('Login successful!');
-      const token = response.data.acessToken.code;
-      localStorage.setItem('token', token);
+      const token = response.data.acessToken.code
+      localStorage.setItem('token', token)
 
-      router.push('/listPerson');
+      loginMessage.value = 'Login successful!'
+      loginMessageType.value = 'success'
+
+      router.push('/listPerson')
     } else {
-      alert('Login failed. Invalid credentials.');
+      loginMessage.value = 'Login failed. Invalid credentials.'
+      loginMessageType.value = 'error'
     }
   } catch (error) {
-    console.error('Error during login:', error);
+    console.error('Error during login:', error)
     if (error.response) {
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
-      console.error('Response headers:', error.response.headers);
+      console.error('Response data:', error.response.data)
+      console.error('Response status:', error.response.status)
+      console.error('Response headers:', error.response.headers)
     }
-    alert('Login failed. Please try again later.');
+    loginMessage.value = 'Login failed. Please try again later.'
+    loginMessageType.value = 'error'
   }
-};
+}
 </script>
 
 <style scoped>
-/* Estilos específicos para esta view */
 .login-container {
+  background-color: #ffffff;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
+  margin-top: 150px;
+}
+
+h2 {
+  display: flex;
+  justify-content: center;
 }
 
 .login-form {
-  width: 100%;
-  max-width: 400px;
+  width: 500px;
   padding: 20px;
   background-color: #ffffff;
   border: 1px solid #dddddd;
@@ -81,7 +95,7 @@ const handleSubmit = async () => {
 }
 
 label {
-  font-weight: bold;
+  font-size: 20px;
   color: #000;
 }
 
@@ -90,6 +104,7 @@ input {
   padding: 10px;
   border: 1px solid #cccccc;
   border-radius: 3px;
+  margin-top: 5px;
 }
 
 button {
@@ -104,15 +119,5 @@ button {
 
 button:hover {
   background-color: #0056b3;
-}
-
-@media (max-width: 768px) {
-  .login-form {
-    padding: 10px;
-  }
-
-  input {
-    width: 100%;
-  }
 }
 </style>

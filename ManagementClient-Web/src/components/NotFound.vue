@@ -1,4 +1,3 @@
-<!-- src/components/NotFound.vue -->
 <template>
   <div class="not-found">
     <h1>404 - Page Not Found</h1>
@@ -14,6 +13,7 @@ export default {
 
 <style scoped>
 .not-found {
+  margin-top: 100px;
   text-align: center;
   width: auto;
 }
