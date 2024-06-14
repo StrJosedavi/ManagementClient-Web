@@ -1,17 +1,18 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import LoginView from '../views/LoginView.vue';
-import CreatePersonView from '../views/CreatePersonView.vue';
-import UpdatePersonView from '../views/UpdatePersonView.vue';
-import DeletePersonView from '../views/DeletePersonView.vue';
-import ListView from '../views/ListView.vue';
-import DetailsView from '../views/DetailsView.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import LoginView from '../views/LoginView.vue'
+import CreatePersonView from '../views/CreatePersonView.vue'
+import UpdatePersonView from '../views/UpdatePersonView.vue'
+import DeletePersonView from '../views/DeletePersonView.vue'
+import ListView from '../views/ListView.vue'
+import DetailsView from '../views/DetailsView.vue'
+import NotFound from '@/components/NotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/login' 
+      redirect: '/login'
     },
     {
       path: '/login',
@@ -21,29 +22,47 @@ const router = createRouter({
     {
       path: '/createPerson',
       name: 'createPerson',
-      component: CreatePersonView
+      component: CreatePersonView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/updatePerson',
       name: 'updatePerson',
-      component: UpdatePersonView
+      component: UpdatePersonView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/deletePerson',
       name: 'deletePerson',
-      component: DeletePersonView
+      component: DeletePersonView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/listPerson',
       name: 'listPerson',
-      component: ListView
+      component: ListView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/detailsPerson',
       name: 'detailsPerson',
-      component: DetailsView
+      component: DetailsView,
+      meta: { requiresAuth: true }
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: NotFound
+    }
   ]
-});
+})
 
-export default router;
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !localStorage.getItem('token')) {
+    next('/login')
+  } else {
+    next()
+  }
+})
+
+export default router
