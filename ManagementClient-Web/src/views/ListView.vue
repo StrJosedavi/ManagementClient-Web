@@ -12,6 +12,7 @@
         <input type="text" id="cnpj" v-model="cnpj" placeholder="Informe o CNPJ" />
       </div>
       <button @click="fetchPersons">Filtrar</button>
+      <button @click="router.push('/createPerson')" class="btn-createPerson">CreatePerson</button>
     </div>
 
     <div class="person-list">
