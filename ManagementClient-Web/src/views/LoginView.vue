@@ -11,7 +11,6 @@
         <input type="password" id="password" v-model="password" required />
       </div>
       <button type="submit">Entrar</button>
-      <PopMessage :message="loginMessage" :messageType="loginMessageType" />
     </form>
   </div>
 </template>
@@ -24,9 +23,6 @@ import { useRouter } from 'vue-router'
 const username = ref('')
 const password = ref('')
 const router = useRouter()
-
-const loginMessage = ref('')
-const loginMessageType = ref('')
 
 const handleSubmit = async () => {
   try {
@@ -47,13 +43,10 @@ const handleSubmit = async () => {
       const token = response.data.acessToken.code
       localStorage.setItem('token', token)
 
-      loginMessage.value = 'Login successful!'
-      loginMessageType.value = 'success'
-
+      alert('Login successful!')
       router.push('/listPerson')
     } else {
-      loginMessage.value = 'Login failed. Invalid credentials.'
-      loginMessageType.value = 'error'
+      alert('Login failed. Invalid credentials.')
     }
   } catch (error) {
     console.error('Error during login:', error)
@@ -62,8 +55,7 @@ const handleSubmit = async () => {
       console.error('Response status:', error.response.status)
       console.error('Response headers:', error.response.headers)
     }
-    loginMessage.value = 'Login failed. Please try again later.'
-    loginMessageType.value = 'error'
+    alert('Login failed. Please try again later.')
   }
 }
 </script>

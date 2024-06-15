@@ -37,7 +37,7 @@
             <p><strong>Endereço:</strong> {{ person.address }}</p>
           </div>
           <DeletePerson :personId="person.id" @deleted="removePersonFromList" />
-          <button @click="navigateToUpdatePerson(person.id)">Atualizar</button>
+          <button @click="navigateToUpdatePerson(person.id)" style="margin-left: 10px;">Atualizar</button>
         </li>
       </ul>
       <p v-else class="no-results">

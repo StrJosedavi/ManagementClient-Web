@@ -36,13 +36,13 @@
         </div>
         <div class="form-group">
           <label for="tradingName">Nome Fantasia:</label>
-          <input type="text" id="tradingName" v-model="tradingName" required />
+          <input type="text" id="tradingName" v-model="tradingName" />
         </div>
       </div>
 
       <div class="form-group">
         <label for="address">Endereço:</label>
-        <input type="text" id="address" v-model="address" required />
+        <input type="text" id="address" v-model="address" />
       </div>
       <div class="form-group">
         <label for="phone">Telefone:</label>
