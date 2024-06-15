@@ -11,31 +11,36 @@
         <label for="cnpj">CNPJ:</label>
         <input type="text" id="cnpj" v-model="cnpj" placeholder="Informe o CNPJ" />
       </div>
-      <button @click="fetchPersons">Filtrar</button>
-      <button @click="router.push('/createPerson')" class="btn-createPerson">CreatePerson</button>
+      <div class="button-group">
+        <button @click="fetchPersons">Filtrar</button>
+        <button @click="navigateToCreatePerson" class="btn-createPerson">Novo</button>
+      </div>
     </div>
 
     <div class="person-list">
-      <ul class="person-items">
+      <ul v-if="persons.length > 0" class="person-items">
         <li v-for="person in persons" :key="person.id" class="person-item">
-          <div class="person-details">
-            <p><strong>Nome:</strong> {{ person.fullName }}</p>
+          <div v-if="person.type === 0" class="person-details-cpf">
+            <p><strong>Nome Completo:</strong> {{ person.fullName }}</p>
             <p><strong>CPF:</strong> {{ person.cpf }}</p>
-            <p v-if="person.type === 1"><strong>Empresa:</strong> {{ person.companyName }}</p>
-            <p v-if="person.type === 1"><strong>CNPJ:</strong> {{ person.cnpj }}</p>
-            <p v-if="person.type === 0"><strong>Tipo:</strong> Pessoa Física</p>
-            <p v-else><strong>Tipo:</strong> Pessoa Jurídica</p>
             <p><strong>Email:</strong> {{ person.mail }}</p>
             <p><strong>Telefone:</strong> {{ person.phone }}</p>
             <p><strong>Endereço:</strong> {{ person.address }}</p>
-            <p>
-              <strong>Data de Nascimento:</strong>
-              {{ new Date(person.birthDate).toLocaleDateString() }}
-            </p>
+            <p><strong>Data de Nascimento:</strong> {{ new Date(person.birthDate).toLocaleDateString() }}</p>
           </div>
+          <div v-else-if="person.type === 1" class="person-details-cnpj">
+            <p><strong>Razão Social:</strong> {{ person.companyName }}</p>
+            <p><strong>Nome Fantasia:</strong> {{ person.tradingName }}</p>
+            <p><strong>CNPJ:</strong> {{ person.cnpj }}</p>
+            <p><strong>Email:</strong> {{ person.mail }}</p>
+            <p><strong>Telefone:</strong> {{ person.phone }}</p>
+            <p><strong>Endereço:</strong> {{ person.address }}</p>
+          </div>
+          <DeletePerson :personId="person.id" @deleted="removePersonFromList" />
+          <button @click="navigateToUpdatePerson(person.id)">Atualizar</button>
         </li>
       </ul>
-      <p v-if="persons.length === 0" class="no-results">
+      <p v-else class="no-results">
         Não foram encontradas pessoas com os filtros informados.
       </p>
     </div>
@@ -45,6 +50,8 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import router from '@/router'
+import DeletePerson from '../components/DeletePerson.vue'
 
 const cpf = ref('')
 const cnpj = ref('')
@@ -63,20 +70,52 @@ axios.interceptors.request.use(
   }
 )
 
+const navigateToUpdatePerson = (personId) => {
+  router.push({ path: '/updatePerson', query: { id: personId } })
+}
+
+const removePersonFromList = (deletedPersonId) => {
+  persons.value = persons.value.filter(person => person.id !== deletedPersonId)
+}
+
+const navigateToCreatePerson = () => {
+  router.push('/createPerson')
+}
+
 const fetchPersons = async () => {
   try {
-    if (cpf.value && cnpj.value) {
-      throw 'Digite apenas um filtro ou CPF ou CNPJ'
+    if ((cpf.value && cnpj.value) || (!cpf.value && !cnpj.value)) {
+      throw 'Digite apenas um filtro CPF ou CNPJ'
+    }
+
+    let params = {}
+    if (cpf.value) {
+      params = { cpf: cpf.value }
+    } else if (cnpj.value) {
+      params = { cnpj: cnpj.value }
     }
 
     const response = await axios.get('https://localhost:5200/Person/GetAll', {
-      params: {
-        cpf: cpf.value,
-        cnpj: cnpj.value
-      }
+      params: params
     })
 
     console.log('Response data:', response.data)
+
+    // Mapear os dados recebidos para o formato esperado na lista
+    persons.value = response.data.person.map(person => ({
+      id: person.id,
+      type: person.type,
+      address: person.address,
+      mail: person.mail,
+      phone: person.phone,
+      fullName: person.type === 0 ? person.fullName : null,
+      cpf: person.type === 0 ? person.cpf : null,
+      birthDate: person.type === 0 ? person.birthDate : null,
+      companyName: person.type === 1 ? person.companyName : null,
+      cnpj: person.type === 1 ? person.cnpj : null,
+      tradingName: person.type === 1 ? person.tradingName : null
+    }))
+
   } catch (error) {
     alert(error)
   }
@@ -84,6 +123,10 @@ const fetchPersons = async () => {
 </script>
 
 <style scoped>
+.btn-createPerson {
+  margin-left: auto;
+}
+
 li {
   color: #000;
 }
@@ -115,6 +158,13 @@ input {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 3px;
+}
+
+.button-group {
+  padding: 8px;
+  margin-top: 18px;
+  display: flex;
+  width: 100%;
 }
 
 button {
@@ -150,7 +200,7 @@ button:hover {
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
-.person-details {
+.person-details-cpf, .person-details-cnpj {
   line-height: 1.5;
 }
 
