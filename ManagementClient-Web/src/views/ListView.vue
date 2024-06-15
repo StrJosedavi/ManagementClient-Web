@@ -5,11 +5,11 @@
     <div class="filters">
       <div class="filter-group">
         <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" v-model="cpf" placeholder="Informe o CPF" />
+        <input type="text" id="cpf" v-model="cpf" v-mask="'###.###.###-##'" placeholder="Informe o CPF" />
       </div>
       <div class="filter-group">
         <label for="cnpj">CNPJ:</label>
-        <input type="text" id="cnpj" v-model="cnpj" placeholder="Informe o CNPJ" />
+        <input type="text" id="cnpj" v-model="cnpj" v-mask="'##.###.###/####-##'" placeholder="Informe o CNPJ" />
       </div>
       <div class="button-group">
         <button @click="fetchPersons">Filtrar</button>

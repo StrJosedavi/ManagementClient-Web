@@ -10,14 +10,14 @@
         </select>
       </div>
 
-      <div v-if="personType === 'PF'">
+      <div v-if="personType === 'PF'" class="form-group">
         <div class="form-group">
           <label for="fullName">Nome Completo:</label>
           <input type="text" id="fullName" v-model="fullName" required />
         </div>
         <div class="form-group">
           <label for="cpf">CPF:</label>
-          <input type="text" id="cpf" v-model="cpf" required />
+          <input type="text" id="cpf" v-model="cpf" v-mask="'###.###.###-##'" required />
         </div>
         <div class="form-group">
           <label for="birthDate">Data de Nascimento:</label>
@@ -32,7 +32,7 @@
         </div>
         <div class="form-group">
           <label for="cnpj">CNPJ:</label>
-          <input type="text" id="cnpj" v-model="cnpj" required />
+          <input type="text" id="cnpj" v-model="cnpj" v-mask="'##.###.###/####-##'" required />
         </div>
         <div class="form-group">
           <label for="tradingName">Nome Fantasia:</label>
@@ -121,7 +121,7 @@ const CreatePerson = async () => {
       throw 'Tipo de pessoa inválido';
     }
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       console.log('Response data:', response.data);
       alert('Pessoa criada com sucesso!');
       router.push('/listPerson');
@@ -171,10 +171,11 @@ label {
 
 input,
 select {
-  width: 100%;
+  width: calc(100% - 20px); /* Ajuste a largura para deixar espaço para padding */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
   margin-top: 5px;
+  box-sizing: border-box; /* Inclui padding e border no cálculo da largura total */
 }
 </style>

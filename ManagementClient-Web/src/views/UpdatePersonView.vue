@@ -208,10 +208,11 @@ label {
 
 input,
 select {
-  width: 100%;
+  width: calc(100% - 20px); 
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
   margin-top: 5px;
+  box-sizing: border-box; 
 }
 </style>
