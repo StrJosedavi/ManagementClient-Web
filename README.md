@@ -42,10 +42,7 @@
      yarn install
      ```
 
-2. **Configuração do Ambiente de Desenvolvimento:**
-   - Configure o arquivo de ambiente (`.env`) com as variáveis necessárias, como a URL da API backend.
-
-3. **Execução do Projeto:**
+2. **Execução do Projeto:**
    - Inicie o servidor de desenvolvimento:
 
      ```bash
@@ -54,5 +51,5 @@
      yarn dev
      ```
 
-   - Acesse a aplicação no navegador pelo endereço `http://localhost:8080` (ou outra porta configurada).
+   - Acesse a aplicação no navegador pelo endereço `http://localhost:5173` (ou outra porta configurada).
 
