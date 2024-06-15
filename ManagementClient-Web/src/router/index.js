@@ -2,9 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import CreatePersonView from '../views/CreatePersonView.vue'
 import UpdatePersonView from '../views/UpdatePersonView.vue'
-import DeletePersonView from '../views/DeletePersonView.vue'
 import ListView from '../views/ListView.vue'
-import DetailsView from '../views/DetailsView.vue'
 import NotFound from '@/components/NotFound.vue'
 
 const router = createRouter({
@@ -32,21 +30,9 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/deletePerson',
-      name: 'deletePerson',
-      component: DeletePersonView,
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/listPerson',
       name: 'listPerson',
       component: ListView,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/detailsPerson',
-      name: 'detailsPerson',
-      component: DetailsView,
       meta: { requiresAuth: true }
     },
     {
